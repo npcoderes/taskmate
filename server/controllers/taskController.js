@@ -72,7 +72,7 @@ export const getAllTasks = async (req, res) => {
 export const updateTaskStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, title } = req.body;
 
     if (!status) {
       return res.status(400).json({
@@ -85,6 +85,9 @@ export const updateTaskStatus = async (req, res) => {
       "UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *",
       [status, id]
     );
+    if (title) {
+      await db.query("UPDATE tasks SET title = $1 WHERE id = $2", [title, id]);
+    }
 
     if (result.rows.length === 0) {
       return res.status(404).json({

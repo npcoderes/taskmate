@@ -33,6 +33,7 @@ export const updateTask = createAsyncThunk(
   'tasks/updateTask',
   async ({ id, taskData }, { rejectWithValue }) => {
     try {
+      console.log("id, taskData:", id, taskData);
       const response = await tasksAPI.updateTask(id, taskData);
       return response.data.data.task;
     } catch (error) {

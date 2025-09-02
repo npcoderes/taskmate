@@ -193,14 +193,14 @@ const Tasks = () => {
     {
       title: "Actions",
       key: "actions",
-      width: 150,
+      width: 200,
       className: "custom-header",
       render: (_, record) => (
         <Space size="small" wrap>
           <Select
             value={record.status}
             onChange={(status) => handleStatusChange(record.id, status)}
-            style={{ width: 100 }}
+            style={{ width: 120 }}
             size="small"
             loading={loading}
             disabled={loading}
