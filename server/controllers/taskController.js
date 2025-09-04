@@ -3,7 +3,7 @@ import db from "../db/db.js";
 export const createTask = async (req, res) => {
   try {
     const { title, status } = req.body;
-
+   const userId = req.user.userId;
     if (!title) {
       return res.status(400).json({
         success: false,
@@ -12,8 +12,8 @@ export const createTask = async (req, res) => {
     }
 
     const result = await db.query(
-      "INSERT INTO tasks (title, status) VALUES ($1, $2) RETURNING *",
-      [title, status || "pending"]
+      "INSERT INTO tasks (title, status, userId) VALUES ($1, $2, $3) RETURNING *",
+      [title, status || "pending", userId]
     );
 
     const task = result.rows[0];
@@ -42,7 +42,8 @@ export const createTask = async (req, res) => {
 export const getAllTasks = async (req, res) => {
   try {
     const result = await db.query(
-      "SELECT * FROM tasks ORDER BY created_at DESC"
+      "SELECT * FROM tasks WHERE userId = $1 ORDER BY created_at DESC",
+      [req.user.userId]
     );
 
     const tasks = result.rows.map((task) => ({
@@ -159,10 +160,12 @@ SELECT
     COUNT(*) AS total
 FROM
     tasks
+
+where userId = $1
 GROUP BY
     status;
 
-        `);
+        `, [req.user.userId]);
 
     // console.log("statusResult:", statusResult.rows);
     const analytics = {
